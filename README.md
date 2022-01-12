@@ -1,7 +1,8 @@
 # graphql-wds
 Web Dev Simplified GraphQL introductory video:
 
-Goes over graphql by implementing basic graphql queries to test a author and book dataset.
+Introduction to GraphQL through implementation of basic graphql queries to test an author and book dataset.
+
 Features: 
 - Basic installation and set up of express, express-graphql, and graphql 
 - Basic introduction to GraphQL types, i.e. GraphQLString, GraphQLList, GraphQLInt, GraphQLNonNull, etc.
