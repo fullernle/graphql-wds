@@ -33,9 +33,24 @@ const BookType = new GraphQLObjectType ({
 	fields: () => ({
 		id: { type: new GraphQLNonNull(GraphQLInt) },
 		name: { type: new GraphQLNonNull(GraphQLString) },
-		authorId: { type: new GraphQLNonNull(GraphQLInt) }
+		authorId: { type: new GraphQLNonNull(GraphQLInt) },
+		author: { 
+			type: AuthorType,
+			resolve: (parent) => {
+				return authors.find(author => author.id = parent.authorId)
+			}
+		}
 	})
 })
+
+const AuthorType = new GraphQLObjectType({
+  name: "Author",
+  description: "This represents an author of a book",
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+  }),
+});
 
 // Root Query Scope
 const RootQueryType = new GraphQLObjectType({
