@@ -5,8 +5,8 @@ const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLList,
-	GraphQLInt,
-	GraphQLNonNull,
+  GraphQLInt,
+  GraphQLNonNull,
 } = require("graphql");
 const app = express();
 
@@ -27,21 +27,21 @@ const books = [
   { id: 8, name: "Beyond the Shadows", authorId: 3 },
 ];
 
-const BookType = new GraphQLObjectType ({
-	name: 'Book',
-	description: 'This represents a book written by an author',
-	fields: () => ({
-		id: { type: new GraphQLNonNull(GraphQLInt) },
-		name: { type: new GraphQLNonNull(GraphQLString) },
-		authorId: { type: new GraphQLNonNull(GraphQLInt) },
-		author: { 
-			type: AuthorType,
-			resolve: (parent) => {
-				return authors.find(author => author.id = parent.authorId)
-			}
-		}
-	})
-})
+const BookType = new GraphQLObjectType({
+  name: "Book",
+  description: "This represents a book written by an author",
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    authorId: { type: new GraphQLNonNull(GraphQLInt) },
+    author: {
+      type: AuthorType,
+      resolve: (parent) => {
+        return authors.find((author) => (author.id = parent.authorId));
+      },
+    },
+  }),
+});
 
 const AuthorType = new GraphQLObjectType({
   name: "Author",
@@ -49,12 +49,12 @@ const AuthorType = new GraphQLObjectType({
   fields: () => ({
     id: { type: new GraphQLNonNull(GraphQLInt) },
     name: { type: new GraphQLNonNull(GraphQLString) },
-		books: {
-			type: new GraphQLList(BookType),
-			resolve: (parent) => {
-				return books.filter(book => book.authorId === parent.id)
-			}
-		}
+    books: {
+      type: new GraphQLList(BookType),
+      resolve: (parent) => {
+        return books.filter((book) => book.authorId === parent.id);
+      },
+    },
   }),
 });
 
@@ -63,22 +63,39 @@ const RootQueryType = new GraphQLObjectType({
   name: "Query",
   description: "Root Query",
   fields: () => ({
+    book: {
+      type: BookType,
+      description: "A single book",
+      args: {
+        id: { type: GraphQLInt },
+      },
+      resolve: (parent, args) => books.find((book) => book.id === args.id),
+    },
     books: {
       type: new GraphQLList(BookType),
       description: "List of All Books",
       resolve: () => books,
     },
-		authors: {
-			type: new GraphQLList(AuthorType),
-			description: "List of All Authors",
-			resolve: () => authors
-		}
+    author: {
+      type: AuthorType,
+      description: "A single author",
+      args: {
+        id: { type: GraphQLInt },
+      },
+      resolve: (parent, args) =>
+        authors.find((author) => author.id === args.id),
+    },
+    authors: {
+      type: new GraphQLList(AuthorType),
+      description: "List of All Authors",
+      resolve: () => authors,
+    },
   }),
 });
 
-const schema = new GraphQLSchema ({
-	query: RootQueryType
-})
+const schema = new GraphQLSchema({
+  query: RootQueryType,
+});
 
 app.use(
   "/graphql",
